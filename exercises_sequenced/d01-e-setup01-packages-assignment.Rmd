@@ -23,13 +23,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### __q1__ Create a new code chunk and prepare to load the `tidyverse`.
 
+
 In [RStudio](https://bookdown.org/yihui/rmarkdown/r-code.html) use the shortcut
 `Ctrl + Alt + I` (`Cmd + Option + I` on Mac). Type the command
 `library(tidyverse`).
 
+```{r}
+library(tidyverse)
+```
 
 Make sure to load packages at the *beginning* of your notebooks! This is a
 best-practice.
+
 
 ### __q2__ Run the chunk with `library(tidyverse)`. What packages are loaded?
 
@@ -41,6 +46,9 @@ cursor.
 
 ### __q3__ What are the main differences between `install.packages()` and `library()`? How often do you need to call each one?
 
+Install packages is only run once before using that package
+
+Library is called when you need to use functions in a package and is typically run once at the beginning of necessary code files 
 
 <!-- include-exit-ticket -->
 # Exit Ticket

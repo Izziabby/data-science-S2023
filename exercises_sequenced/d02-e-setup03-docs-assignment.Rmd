@@ -31,6 +31,9 @@ associated with `"dplyr"`. What vignettes are available?
 
 ```{r q1-task, eval=FALSE}
 ## TODO: Re-write the code above following the tidyverse style guide
+
+vignette(package = "dplyr")
+
 ```
 
 
@@ -48,6 +51,7 @@ iris %>%
   as_tibble() %>%
   filter(
     # TODO: Filter on Species "setosa"
+    Species == "setosa"
   )
 ```
 
@@ -79,6 +83,7 @@ learn more.
 ### __q5__ Look up the documentation on `cut_number`; what package does it come
 from? What about `parse_number()`? What about `row_number()`?
 
+?cut_number
 
 <!-- include-exit-ticket -->
 # Exit Ticket
