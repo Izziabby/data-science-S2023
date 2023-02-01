@@ -44,6 +44,7 @@ library(tidyverse)
 to do? Do those simple checks on the diamonds dataset below.
 
 ```{r q0-task}
+diamonds %>% glimpse()
 ```
 
 I'm going to walk you through a train of thought I had when studying the
@@ -70,7 +71,9 @@ diamonds %>%
 ```
 
 **Observations**:
-- Write your observations here!
+
+  * Hypothesis 1 is incorrect
+  * Ideal cut is more numerous than all of the other cuts 
 
 ## Hypothesis 2
 
@@ -87,7 +90,8 @@ diamonds %>%
 ```
 
 **Observations**:
-- Write your observations here!
+
+* This is not a good graph because it is very hard to see the variation within each cut = overplotting
 
 The following is a set of *boxplots*; the middle bar denotes the median, the
 boxes denote the *quartiles* (upper and lower "quarters" of the data), and the
@@ -102,7 +106,8 @@ diamonds %>%
 ```
 
 **Observations**:
-- Write your observations here!
+
+* Surprisingly, Ideal diamonds tend to be the least pricey
 
 ## Unraveling Hypothesis 2
 
@@ -122,7 +127,9 @@ diamonds %>%
 ```
 
 **Observations**:
-- Write your observations here!
+  * median of ideal is lower than other cuts -> this shows that gemcutter trade cut for carrat
+  * largest carrat tends to be fair cut (cutting gemstone reduces its weight)
+  * ideal diamonds are cheaper (usually lower carat)
 
 ## Footnotes
 

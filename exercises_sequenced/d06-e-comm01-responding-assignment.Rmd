@@ -94,7 +94,9 @@ Here the bolded response is *actively* engaging with your colleague's question, 
 **Observations**:
 
 - Is the bolded response **active** or **passive**? Why?
+Active
 - Is the bolded response **constructive** or **destructive**? Why?
+Constructive
 - How does this statement make you *feel*, relative to the bolded statement before the q1 prompt?
 
 ### __q2__ Identify the nature of the bolded line below, rating it as either **active vs passive** and **constructive vs destructive**.
@@ -108,7 +110,9 @@ Here the bolded response is *actively* engaging with your colleague's question, 
 **Observations**:
 
 - Is the bolded response **active** or **passive**? Why?
+Passive
 - Is the bolded response **constructive** or **destructive**? Why?
+Constructive
 - How does this statement make you *feel*, relative to the bolded statement before the q1 prompt?
 
 **Intermediate Conclusion**: We can quite naturally think of discussion responses in the APCD framework. Therefore, we should try to give active and constructive responses in data discussions!
@@ -138,7 +142,7 @@ Imagine the following scenario:
 >
 > *Colleague*: **"Percival, why are you so terrible at making graphs?"**
 >
-> *Presenter*: "..."
+> *Presenter*: "...";
 
 Here the bolded question is *passively* engaging with the presenter's content (it's not referring to any issues in the graph, but rather making an *ad hominem* attack of the presenter) and *destructively* making a value judgment on the presenter. This is a truly horrendous way to ask a question.
 
@@ -175,7 +179,9 @@ Let's practice once more!
 **Observations**:
 
 - Is the bolded response **active** or **passive**? Why?
+Passive
 - Is the bolded response **constructive** or **destructive**? Why?
+Neither? Off topic
 
 <!-- include-exit-ticket -->
 # Exit Ticket
