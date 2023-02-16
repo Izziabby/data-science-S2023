@@ -162,10 +162,9 @@ df_stang_long <-
       names_to = c(".value", "angle"),
       names_sep = "_",
       names_transform = list(angle = as.integer),
-      values_to = ".value",
       cols = c(-thick, -alloy)
     ) %>% filter(
-      E != -1 
+      E >= 0 
     )
 
 
@@ -323,9 +322,18 @@ df_stang_long %>%
 
 - Does this graph support or contradict the claim above?
   - Contradicts, E changes as thickness changes
-    - The more material (thicker sample) has a lower E value
+    - The samples with the most material (thicker sample) have the
+      lowest values of E
 
-    - The thinner the sample, the higher the E value
+    - The thinner samples (in comparison to the thickest) all have
+      higher values of E
+- Is this evidence conclusive one way or another?
+  - No, this evidence is not conclusive as there is not a clear trend
+
+    - The values of E for all of the samples under 0.081 in. are all
+      clustered
+
+    - These samples also have overlapping values of E
 
 # References
 
