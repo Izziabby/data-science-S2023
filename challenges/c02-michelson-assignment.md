@@ -156,10 +156,10 @@ df_michelson %>% glimpse
 ## TODO: Compute summaries
 df_q1 <- df_michelson %>% 
   group_by(Distinctness) %>%
-    summarise(
-      n = n(), 
-      MeanVelocity = mean(Velocity)
-    )
+  summarise(
+    n = n(), 
+    MeanVelocity = mean(Velocity)
+  )
         
 df_q1 %>%
   arrange(desc(Distinctness)) %>%
@@ -403,6 +403,48 @@ df_q2 %>%
 
 ![](c02-michelson-assignment_files/figure-gfm/q5-1.png)<!-- -->
 
+``` r
+df_q2 %>%
+  ggplot(aes(Date, Velocity)) +
+    
+  geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON,
+    linetype = "dotted"
+  ) +
+    
+  geom_hline(
+    yintercept = LIGHTSPEED_VACUUM,
+    linetype = "dashed"
+  ) +
+  geom_point(
+    mapping = aes(x = Date, y = Velocity, color = Temp)
+  ) + 
+  facet_wrap(~ Distinctness)
+```
+
+![](c02-michelson-assignment_files/figure-gfm/q5-2.png)<!-- -->
+
+``` r
+df_q2 %>%
+  ggplot() +
+  
+  geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON,
+    linetype = "dotted"
+  ) +
+    
+  geom_hline(
+    yintercept = LIGHTSPEED_VACUUM,
+    linetype = "dashed"
+  ) +
+  
+  geom_boxplot(
+    mapping = aes(x = Distinctness, y = Velocity)
+  )
+```
+
+![](c02-michelson-assignment_files/figure-gfm/q5-3.png)<!-- -->
+
 **Observations**:
 
 - Data on June 23rd was recorded at a high temperature along with good
@@ -412,6 +454,11 @@ df_q2 %>%
 - The data with low distinctness was taken at a variety of temperatures
 - The data taken with the lowest temperature all had velocities under
   Michelson’s velocity estimate
+- **Are there other patterns in the data that might help explain the
+  difference between Michelson’s estimate and LIGHTSPEED_VACUUM?**
+  - There does not seem to be other patterns in the data set that help
+    explain the difference between Michelson’s estimate and
+    LIGHTSPEED_VACUUM.
 
 ## Bibliography
 

@@ -26,7 +26,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category    | Needs Improvement                                                                                                | Satisfactory                                                                                                               |
-|-------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+|--------------|----------------------------|-------------------------------|
 | Effort      | Some task **q**'s left unattempted                                                                               | All task **q**'s attempted                                                                                                 |
 | Observed    | Did not document observations, or observations incorrect                                                         | Documented correct observations based on analysis                                                                          |
 | Supported   | Some observations not clearly supported by analysis                                                              | All observations clearly supported by analysis (table, graph, etc.)                                                        |
@@ -90,10 +90,10 @@ df_michelson %>% glimpse
 ## TODO: Compute summaries
 df_q1 <- df_michelson %>% 
   group_by(Distinctness) %>%
-    summarise(
-      n = n(), 
-      MeanVelocity = mean(Velocity)
-    )
+  summarise(
+    n = n(), 
+    MeanVelocity = mean(Velocity)
+  )
         
 df_q1 %>%
   arrange(desc(Distinctness)) %>%
@@ -254,6 +254,41 @@ df_q2 %>%
   geom_point(
     mapping = aes(x = Date, y = Velocity, color = Temp, size = Distinctness)
   ) 
+
+df_q2 %>%
+  ggplot(aes(Date, Velocity)) +
+    
+  geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON,
+    linetype = "dotted"
+  ) +
+    
+  geom_hline(
+    yintercept = LIGHTSPEED_VACUUM,
+    linetype = "dashed"
+  ) +
+  geom_point(
+    mapping = aes(x = Date, y = Velocity, color = Temp)
+  ) + 
+  facet_wrap(~ Distinctness)
+
+df_q2 %>%
+  ggplot() +
+  
+  geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON,
+    linetype = "dotted"
+  ) +
+    
+  geom_hline(
+    yintercept = LIGHTSPEED_VACUUM,
+    linetype = "dashed"
+  ) +
+  
+  geom_boxplot(
+    mapping = aes(x = Distinctness, y = Velocity)
+  )
+
 ```
 
 **Observations**:
@@ -262,6 +297,8 @@ df_q2 %>%
 -   There are several grouping of data with high distinctness surrounding the exact value for the speed of light in a vacuum
 -   The data with low distinctness was taken at a variety of temperatures
 -   The data taken with the lowest temperature all had velocities under Michelson's velocity estimate
+-   **Are there other patterns in the data that might help explain the difference between Michelson's estimate and LIGHTSPEED_VACUUM?**
+    -   There does not seem to be other patterns in the data set that help explain the difference between Michelson's estimate and LIGHTSPEED_VACUUM.
 
 ## Bibliography
 
