@@ -41,7 +41,7 @@ All the deliverables stated in the rubrics above are due **at midnight** before 
 ```{r setup}
 library(tidyverse)
 library(gapminder)
-
+library(ggrepel)
 ```
 
 *Background*: [Gapminder](https://www.gapminder.org/about-gapminder/) is an independent organization that seeks to educate people about the state of the world. They seek to counteract the worldview constructed by a hype-driven media cycle, and promote a "fact-based worldview" by focusing on data. The dataset we'll study in this challenge is from Gapminder.
@@ -116,12 +116,12 @@ gapminder %>%
 -   Asia's gdpPercap were all less than 10000
 -   The Americas' gdpPercap has a cluster around 2500
 -   Europe has the second highest gdpPercap at almost 150000
--   Asia had one gdpPercap that was over 90000 which is not included in this visual
+-   Asia had one gdpPercap that was over 90000
 
 **Difficulties & Approaches**:
 
--   Asia had one gdpPercap that was greater than 90000 which was an outlier and squished the rest of the data so I removed it for clarity
--   Oceania's box was unreadable vertically so i flipped the graph
+-   Asia had one gdpPercap that was greater than 90000 which was an outlier and squished the rest of the data so a logscale was used to increase readability
+-   Oceania's box is still pretty unreadable, likely due to a small number of data
 
 ### **q3** You should have found *at least* three outliers in q2 (but possibly many more!). Identify those outliers (figure out which countries they are).
 
@@ -131,7 +131,10 @@ gapminder %>%
   filter(year == year_min) %>% 
   group_by(continent) %>% 
   filter(!continent == "Oceania") %>% 
-  filter(gdpPercap < quantile(gdpPercap, 0.01) | gdpPercap > quantile(gdpPercap, 0.99))
+  filter(
+    gdpPercap < quantile(gdpPercap, 0.01) | 
+    gdpPercap > quantile(gdpPercap, 0.99)
+  )
 ```
 
 **Observations**:
@@ -252,10 +255,30 @@ gapminder %>%
   facet_grid(vars(year), vars(continent))
 ```
 
--   (Your notes and observations here)
+-   My initial theory was that as the pop increases the gdpPercap would also increases but clearly that is not the case
+    -   In the America's there seem to be two countries that follow this trend
+-   Africa's gdpPercap are all below 15000 with many clustered around 1000/2000
+-   Asia and Europe have a large range of gdpPercap
+-   Europe has the highest gdpPercap
 
 ```{r q5-task3}
 ## TASK: Your third graph
+## gdp lifeExp
+
+gapminder %>%
+  filter(year == max(year)) %>%
+           
+  ggplot(aes(lifeExp, gdpPercap)) +
+  geom_point(
+    mapping = aes(color = continent),
+    size = 2
+  ) +
+  facet_grid(vars(year), vars(continent))
+
 ```
 
--   (Your notes and observations here)
+-   European countries all have a similar lifeExp (also observed in graph 1)
+-   There are many countries that have a high lifeExp and a high gdpPercap
+-   The America's have a cluster of gdpPercap around 10000 all with very similar lifeExp
+-   Some countries in Africa's gdpPercap at a lifeExp of 70 is higher than half of the countries n=in the America's and Asia
+    -   Some countries in Africa's gdpPercap at a lifeExp of 70 is lower than Europe and Oceania's
