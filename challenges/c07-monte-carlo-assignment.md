@@ -206,16 +206,16 @@ df_q1
     ## # A tibble: 10,000 × 2
     ##         x     y
     ##     <dbl> <dbl>
-    ##  1 0.525  0.777
-    ##  2 0.424  0.661
-    ##  3 0.464  0.143
-    ##  4 0.0706 0.905
-    ##  5 0.210  0.960
-    ##  6 0.0934 0.289
-    ##  7 0.186  0.206
-    ##  8 0.482  0.521
-    ##  9 0.352  0.192
-    ## 10 0.520  0.145
+    ##  1 0.559  0.986
+    ##  2 0.558  0.541
+    ##  3 0.0482 0.308
+    ##  4 0.0507 0.212
+    ##  5 0.525  0.565
+    ##  6 0.482  0.879
+    ##  7 0.539  0.271
+    ##  8 0.945  0.166
+    ##  9 0.0664 0.806
+    ## 10 0.590  0.930
     ## # … with 9,990 more rows
 
 ``` r
@@ -240,6 +240,47 @@ df_q1
     ##   <dbl> <dbl>
     ## 1  3.14  1.64
 
+``` r
+set.seed(101)
+
+q99 <- qnorm( 1 - (1 - 0.99) / 2 )
+
+df_q1_sampled <- 
+  map_dfr(
+  c(10, 100, 1000, 1e4, 1e5, 1e6, 1e7, 1e8),
+  function(n_samples) {
+   tibble(
+    x = runif(n_samples, min = 0, max = 1), 
+    y = runif(n_samples, min = 0, max = 1)
+  ) %>% 
+  mutate(stat = (x^2 + y^2 <= 1)) %>% 
+  summarize(
+    count_total = n(), 
+    mean = mean(stat)*4, 
+    sd = sd(stat)*4
+    ) %>% 
+  mutate( 
+    lo = mean - q99 * sd / sqrt(n_samples),
+    hi = mean + q99 * sd / sqrt(n_samples)
+    )
+  }
+)
+
+df_q1_sampled
+```
+
+    ## # A tibble: 8 × 5
+    ##   count_total  mean    sd    lo    hi
+    ##         <int> <dbl> <dbl> <dbl> <dbl>
+    ## 1          10  2.8   1.93  1.23  4.37
+    ## 2         100  2.8   1.84  2.33  3.27
+    ## 3        1000  3.11  1.66  2.98  3.25
+    ## 4       10000  3.14  1.64  3.10  3.18
+    ## 5      100000  3.14  1.64  3.13  3.16
+    ## 6     1000000  3.14  1.64  3.14  3.15
+    ## 7    10000000  3.14  1.64  3.14  3.14
+    ## 8   100000000  3.14  1.64  3.14  3.14
+
 ### **q2** Using your data in `df_q1`, estimate $\pi$.
 
 ``` r
@@ -248,7 +289,7 @@ pi_est <- df_q1$mean
 pi_est
 ```
 
-    ## [1] 3.142
+    ## [1] 3.1388
 
 # Quantifying Uncertainty
 
@@ -262,13 +303,13 @@ to assess your $\pi$ estimate.
 ### **q3** Using a CLT approximation, produce a confidence interval for your estimate of $\pi$. Make sure you specify your confidence level. Does your interval include the true value of $\pi$? Was your chosen sample size sufficiently large so as to produce a trustworthy answer?
 
 ``` r
-q95 <- qnorm( 1 - (1 - 0.95) / 2 )
+q99 <- qnorm( 1 - (1 - 0.99) / 2 )
 
 df_clt <- df_q1 %>% 
   mutate(
     se = sd / sqrt(n),
-    lo = mean - q95 * se,
-    hi = mean + q95 * se
+    lo = mean - q99 * se,
+    hi = mean + q99 * se
   ) 
 df_clt
 ```
@@ -276,16 +317,80 @@ df_clt
     ## # A tibble: 1 × 5
     ##    mean    sd     se    lo    hi
     ##   <dbl> <dbl>  <dbl> <dbl> <dbl>
-    ## 1  3.14  1.64 0.0164  3.11  3.17
+    ## 1  3.14  1.64 0.0164  3.10  3.18
+
+``` r
+## NOTE: No need to change this!
+set.seed(101)
+
+
+# Visualize
+df_q1_sampled %>%
+  ggplot(aes(count_total, mean)) +
+   geom_hline(
+    data = df_q1,
+    mapping = aes(yintercept = mean),
+    size = 0.1
+  ) +
+ 
+  geom_errorbar(aes(
+    ymin = lo,
+    ymax = hi,
+    color = (lo <= pi) & (pi <= hi)
+  )) +
+  geom_point() +
+  scale_x_log10() +
+  scale_color_discrete(name = "Is pi within the confidence interval?") +
+  theme(legend.position = "bottom") +
+  labs(
+    x = "Samples",
+    y = "Mean",
+    title = "Estimations of Pi"
+  )
+```
+
+![](c07-monte-carlo-assignment_files/figure-gfm/confidence%20intervals-1.png)<!-- -->
+
+``` r
+## NOTE: No need to change this!
+set.seed(101)
+
+
+# Visualize
+tail(df_q1_sampled, 4) %>%
+  ggplot(aes(count_total, mean)) +
+   geom_hline(
+    data = df_q1,
+    mapping = aes(yintercept = pi),
+    size = 0.1
+  ) +
+ 
+  geom_errorbar(aes(
+    ymin = lo,
+    ymax = hi,
+    color = (lo <= pi) & (pi <= hi)
+  )) +
+  geom_point() +
+  scale_x_log10() +
+  scale_color_discrete(name = "Is pi within the confidence interval?") +
+  theme(legend.position = "bottom") +
+  labs(
+    x = "Samples",
+    y = "Mean",
+    title = "Estimations of Pi"
+  )
+```
+
+![](c07-monte-carlo-assignment_files/figure-gfm/confidence%20intervals%202-1.png)<!-- -->
 
 **Observations**:
 
 - Does your interval include the true value of $\pi$?
   - Yes, the interval is \~3.095 - \~3.16
 - What confidence level did you choose?
-  - 95%
+  - 99%
 - Was your sample size $n$ large enough? Why do you say that?
-  - Yes, my sample size of 10000 was larger enough because the
+  - Yes, my initial sample size of 10000 was larger enough because the
     confidence interval consistently contained the value of $\pi$.
   - The lower the value of n, the larger the confidence interval is.
 
