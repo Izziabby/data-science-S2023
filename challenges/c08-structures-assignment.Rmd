@@ -26,7 +26,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category    | Needs Improvement                                                                                                | Satisfactory                                                                                                               |
-|--------------|----------------------------|-------------------------------|
+|-----------------|--------------------------|-----------------------------|
 | Effort      | Some task **q**'s left unattempted                                                                               | All task **q**'s attempted                                                                                                 |
 | Observed    | Did not document observations, or observations incorrect                                                         | Documented correct observations based on analysis                                                                          |
 | Supported   | Some observations not clearly supported by analysis                                                              | All observations clearly supported by analysis (table, graph, etc.)                                                        |
@@ -99,7 +99,7 @@ mean(df_samples$strength)
 
     Assuming the scopus is the strength of an individual part made from this aluminum alloy, is the observed variability real or induced?
 
-    -   (Your response here)
+    -   The variability would be induced since we are taking multiple measurements
 
 # Assessing Structural Safety
 
@@ -139,17 +139,20 @@ $$\text{POF} \equiv \mathbb{P}[g \leq 0].$$
 
 ```{r q2-task}
 ## TODO: Estimate the probability of failure; i.e. POF = Pr[g <= 0]
-df_samples
+stats <- df_samples %>% g_break()
+
+pof <- mean(stats <= 0)
+pof
 ```
 
 **Observations**:
 
 -   Does this estimate satisfy `POF < 0.03`?
-    -   (Your response here)
+    -   yes, pof = 0
 -   Is this estimate of the probability of failure trustworthy? Why or why not?
-    -   (Your response here)
+    -   I don't think this estimate is trustworthy since a pof of 0 would mean that the part will never break which seems like an unreasonable assumption to make using only 25 points of data
 -   Can you confidently conclude that `POF < 0.03`? Why or why not.
-    -   (Your response here)
+    -   I can not confidently conclude that pof is less than 0.03 since I found the pof we calculated to be untrustworthy
 
 ## Material property model
 
@@ -167,7 +170,11 @@ Since we have so few physical samples, we will fit a distribution to model the m
 
 ```{r q3-task}
 ## TODO:
-df_fit <- NA
+df_fit <- 
+  fitdistr(
+    df_samples$strength,
+    densfun = "lognormal"
+  )
 df_fit
 ```
 
@@ -181,35 +188,36 @@ Once you've successfully fit a model for the strength, you can estimate the prob
 
 ```{r q4-task}
 ## TODO 1: Choose Monte Carlo sample size
-#n_monte_carlo <- NA_real_
+n_monte_carlo <- 10000
 
 ## TODO 2: Extract parameter estimates from df_fit
-#strength_meanlog <- NA_real_
-#strength_sdlog <- NA_real_
+strength_meanlog <- df_fit$estimate[1]
+
+strength_sdlog <- df_fit$estimate[2]
 
 # Generate samples
 
-#df_norm_sim <-
-#  tibble(strength = rlnorm(n_monte_carlo, strength_meanlog, strength_sdlog)) %>%
+df_norm_sim <-
+  tibble(strength = rlnorm(n_monte_carlo, strength_meanlog, strength_sdlog)) %>%
 
 ## TODO 3: Compute structural response
-  #glimpse()
+  glimpse()
 
 ## NOTE: The following code estimates the POF and a 95% confidence interval
-#df_norm_pof <-
-#  df_norm_sim %>%
-#  mutate(stat = g <= 0) %>%
-#  summarize(
-#    pof_est = mean(stat),
-#    se = sd(stat) / sqrt(n_monte_carlo)
-#  ) %>%
-#  mutate(
-#    pof_lo = pof_est - 1.96 * se,
-#    pof_hi = pof_est + 1.96 * se
-#  ) %>%
-#  select(pof_lo, pof_est, pof_hi)
+df_norm_pof <-
+  df_norm_sim %>%
+  mutate(stat = g_break(strength) <= 0) %>%
+  summarize(
+    pof_est = mean(stat),
+    se = sd(stat) / sqrt(n_monte_carlo)
+  ) %>%
+  mutate(
+    pof_lo = pof_est - 1.96 * se,
+    pof_hi = pof_est + 1.96 * se
+  ) %>%
+  select(pof_lo, pof_est, pof_hi)
 
-#df_norm_pof
+df_norm_pof
 ```
 
 -   Assuming your scopus is the probability of failure `POF` defined above, does your estimate exhibit real variability, induced variability, or both?

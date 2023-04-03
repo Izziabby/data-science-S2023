@@ -225,7 +225,8 @@ mean(df_samples$strength)
   Assuming the scopus is the strength of an individual part made from
   this aluminum alloy, is the observed variability real or induced?
 
-  - (Your response here)
+  - The variability would be induced since we are taking multiple
+    measurements
 
 # Assessing Structural Safety
 
@@ -276,33 +277,26 @@ as the `mean()` of an indicator. Use the same strategy here.
 
 ``` r
 ## TODO: Estimate the probability of failure; i.e. POF = Pr[g <= 0]
-df_samples
+stats <- df_samples %>% g_break()
+
+pof <- mean(stats <= 0)
+pof
 ```
 
-    ## # A tibble: 25 × 1
-    ##    strength
-    ##       <dbl>
-    ##  1   39484.
-    ##  2   39812.
-    ##  3   40052.
-    ##  4   40519.
-    ##  5   40045.
-    ##  6   40160.
-    ##  7   40094.
-    ##  8   39674.
-    ##  9   40144.
-    ## 10   39865.
-    ## # … with 15 more rows
+    ## [1] 0
 
 **Observations**:
 
 - Does this estimate satisfy `POF < 0.03`?
-  - (Your response here)
+  - yes, pof = 0
 - Is this estimate of the probability of failure trustworthy? Why or why
   not?
-  - (Your response here)
+  - I don’t think this estimate is trustworthy since a pof of 0 would
+    mean that the part will never break which seems like an unreasonable
+    assumption to make using only 25 points of data
 - Can you confidently conclude that `POF < 0.03`? Why or why not.
-  - (Your response here)
+  - I can not confidently conclude that pof is less than 0.03 since I
+    found the pof we calculated to be untrustworthy
 
 ## Material property model
 
@@ -325,11 +319,17 @@ specify a lognormal distribution.
 
 ``` r
 ## TODO:
-df_fit <- NA
+df_fit <- 
+  fitdistr(
+    df_samples$strength,
+    densfun = "lognormal"
+  )
 df_fit
 ```
 
-    ## [1] NA
+    ##      meanlog         sdlog    
+    ##   10.595117912    0.008750493 
+    ##  ( 0.001750099) ( 0.001237507)
 
 Once you’ve successfully fit a model for the strength, you can estimate
 the probability of failure by drawing samples from the fitted
@@ -345,36 +345,48 @@ lognormal distribution.
 
 ``` r
 ## TODO 1: Choose Monte Carlo sample size
-#n_monte_carlo <- NA_real_
+n_monte_carlo <- 10000
 
 ## TODO 2: Extract parameter estimates from df_fit
-#strength_meanlog <- NA_real_
-#strength_sdlog <- NA_real_
+strength_meanlog <- df_fit$estimate[1]
+
+strength_sdlog <- df_fit$estimate[2]
 
 # Generate samples
 
-#df_norm_sim <-
-#  tibble(strength = rlnorm(n_monte_carlo, strength_meanlog, strength_sdlog)) %>%
+df_norm_sim <-
+  tibble(strength = rlnorm(n_monte_carlo, strength_meanlog, strength_sdlog)) %>%
 
 ## TODO 3: Compute structural response
-  #glimpse()
-
-## NOTE: The following code estimates the POF and a 95% confidence interval
-#df_norm_pof <-
-#  df_norm_sim %>%
-#  mutate(stat = g <= 0) %>%
-#  summarize(
-#    pof_est = mean(stat),
-#    se = sd(stat) / sqrt(n_monte_carlo)
-#  ) %>%
-#  mutate(
-#    pof_lo = pof_est - 1.96 * se,
-#    pof_hi = pof_est + 1.96 * se
-#  ) %>%
-#  select(pof_lo, pof_est, pof_hi)
-
-#df_norm_pof
+  glimpse()
 ```
+
+    ## Rows: 10,000
+    ## Columns: 1
+    ## $ strength <dbl> 39947.12, 40128.33, 39892.38, 40756.55, 39793.54, 40125.22, 4…
+
+``` r
+## NOTE: The following code estimates the POF and a 95% confidence interval
+df_norm_pof <-
+  df_norm_sim %>%
+  mutate(stat = g_break(strength) <= 0) %>%
+  summarize(
+    pof_est = mean(stat),
+    se = sd(stat) / sqrt(n_monte_carlo)
+  ) %>%
+  mutate(
+    pof_lo = pof_est - 1.96 * se,
+    pof_hi = pof_est + 1.96 * se
+  ) %>%
+  select(pof_lo, pof_est, pof_hi)
+
+df_norm_pof
+```
+
+    ## # A tibble: 1 × 3
+    ##   pof_lo pof_est pof_hi
+    ##    <dbl>   <dbl>  <dbl>
+    ## 1 0.0160  0.0186 0.0212
 
 - Assuming your scopus is the probability of failure `POF` defined
   above, does your estimate exhibit real variability, induced
