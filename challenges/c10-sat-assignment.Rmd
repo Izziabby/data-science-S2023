@@ -51,7 +51,7 @@ define how you will be graded, both on an individual and team basis.
 <!-- ------------------------- -->
 
 | Category    | Needs Improvement                                                                                                | Satisfactory                                                                                                               |
-|-------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+|--------------|----------------------------|-------------------------------|
 | Effort      | Some task **q**'s left unattempted                                                                               | All task **q**'s attempted                                                                                                 |
 | Observed    | Did not document observations, or observations incorrect                                                         | Documented correct observations based on analysis                                                                          |
 | Supported   | Some observations not clearly supported by analysis                                                              | All observations clearly supported by analysis (table, graph, etc.)                                                        |
@@ -256,19 +256,51 @@ Finally, let's use the bootstrap to perform the same test using
 ```{r q5-task}
 ## TODO: Use the bootstrap to compute a confidence interval for corr[high_GPA, univ_GPA]
 
-high_GPA_resample <-
-  bootstraps(df_composite$high_GPA, times = 1000)
+conf_interval <- function(col) {
+  col_mean <- mean(col)
+  std_col <- sd(col)
+  col_se <- std_col / sqrt(length(col))
+  
+  tibble(
+    # term = "col", 
+    # estimate = est,
+    int_lo = col_mean + qnorm(0.005) * col_se,
+    int_hi = col_mean + qnorm(0.995) * col_se
+  )
+}
 
-high_GPA_resample
+df_composite %>% 
+  bootstraps(times = 1000) %>% 
+  mutate(
+    estimates = map_dfr(
+      splits,
+      ~ analysis(.x) %>% summarize(
+        corr_gpa = cor.test(high_GPA, univ_GPA)$estimate,
+        corr_sat = cor.test(both_SAT, univ_GPA)$estimate
+        )
+      )
+  ) %>% 
+  summarize(
+    corr_gpa = estimates %>% pull(corr_gpa),
+    corr_sat = estimates %>% pull(corr_sat)
+  ) %>%
+  summarize(
+    interval_gpa = conf_interval(corr_gpa) %>%
+      rename(c(gpa_lo="int_lo", gpa_hi="int_hi")),
+    interval_sat = conf_interval(corr_sat) %>%
+      rename(c(sat_lo="int_lo", sat_hi="int_hi"))
+  ) %>%
+  unnest(cols = c(interval_gpa, interval_sat))
 
+# int_pctl(estimates)
 ```
 
 **Observations**:
 
 -   How does your estimate from q5 compare with your estimate from q4?
-    -   (Your response here)
+    -   The estimate from q5 is
 -   How does your CI from q5 compare with your CI from q4?
-    -   (Your response here)
+    -   The estimate from q5 is much narrower than the estimate from q4
 
 *Aside*: When you use two different approximations to compute the same
 quantity and get similar results, that's an *encouraging sign*. Such an

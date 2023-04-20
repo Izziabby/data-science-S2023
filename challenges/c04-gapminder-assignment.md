@@ -198,22 +198,41 @@ can.
 
 gapminder %>%
   filter(year == year_min) %>% 
-    ggplot() +
-    stat_boxplot(aes(continent, gdpPercap)) +
-    scale_y_log10() +
-    coord_flip()
+  ggplot() +
+  stat_boxplot(aes(continent, gdpPercap)) +
+  scale_y_log10() +
+  coord_flip()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
+
+``` r
+gapminder %>% filter(year == year_min) %>% arrange(desc(gdpPercap))
+```
+
+    ## # A tibble: 142 × 6
+    ##    country        continent  year lifeExp       pop gdpPercap
+    ##    <fct>          <fct>     <int>   <dbl>     <int>     <dbl>
+    ##  1 Kuwait         Asia       1952    55.6    160000   108382.
+    ##  2 Switzerland    Europe     1952    69.6   4815000    14734.
+    ##  3 United States  Americas   1952    68.4 157553000    13990.
+    ##  4 Canada         Americas   1952    68.8  14785584    11367.
+    ##  5 New Zealand    Oceania    1952    69.4   1994794    10557.
+    ##  6 Norway         Europe     1952    72.7   3327728    10095.
+    ##  7 Australia      Oceania    1952    69.1   8691212    10040.
+    ##  8 United Kingdom Europe     1952    69.2  50430000     9980.
+    ##  9 Bahrain        Asia       1952    50.9    120447     9867.
+    ## 10 Denmark        Europe     1952    70.8   4334000     9692.
+    ## # … with 132 more rows
 
 **Observations**:
 
 - Each of Africa’s gdpPercap were less than 5000
 - Oceania’s gdpPercap were both around 10000
-- Asia’s gdpPercap were all less than 10000
+- All but one of Asia’s gdpPercap were less than 10000
 - The Americas’ gdpPercap has a cluster around 2500
-- Europe has the second highest gdpPercap at almost 150000
-- Asia had one gdpPercap that was over 90000
+- Europe has the second highest gdpPercap at almost 15000
+- Asia had one gdpPercap that was over 100000
 
 **Difficulties & Approaches**:
 
@@ -253,10 +272,10 @@ gapminder %>%
 **Observations**:
 
 - Identify the outlier countries from q2
-  - Asia: gdpPercap 331.0000 and 108382.3529
-  - Europe: gdpPercap 973.5332 and 14734.2327
-  - Africa: gdpPercap 298.8462 and 4725.2955
-  - Americas: gdpPercap 1397.7171 and 13990.4821
+  - There are 3 outlier countries:
+    - Kuwait with a gdpPercap of 108382.3529
+    - United States with a gdpPercap 13990.4821
+    - Canada with a gdpPercap 11367.1611
 
 *Hint*: For the next task, it’s helpful to know a ggplot trick we’ll
 learn in an upcoming exercise: You can use the `data` argument inside
@@ -320,7 +339,7 @@ gapminder %>%
 **Observations**:
 
 - Kuwait is an outlier in both 1952 and 2007
-- All of the countries gdpPercap median increased from 1952 to 2007
+- All of the continents gdpPercap median increased from 1952 to 2007
 - Asia’s, Africa’s, America’s and Europe’s upper quartile increased
   significantly from 1952 to 2007
   - Europe’s upper quartile had the largest increased
@@ -359,7 +378,6 @@ gapminder %>%
 
 - lifeExp of all continents seem to have generally gone up from 1952 to
   2007
-- pop of all continents seem to have generally gone up from 1952 to 2007
 - All countries in Europe’s lifeExp in 2007 is above 70 years
 - Asia in 2007 has one major outlier where the lifeExp is around 45
   years
@@ -368,8 +386,10 @@ gapminder %>%
   by 2007
   - Africa had the opposite trend where there was a small span in 1952
     and the span increased by 2007
-- Asia was the continent with the lowest lifeExp in 1952
-  - Africa was the continent with the lowest lifeExp in 2007
+- Asia was the continent with the lowest lifeExp in 1952 compared to the
+  lifeExp of all of the other continents
+- Africa was the continent with the lowest lifeExp in 2007 compared to
+  the lifeExp of all of the other continents
 
 ``` r
 ## TASK: Your second graph
@@ -390,7 +410,8 @@ gapminder %>%
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task2-1.png)<!-- -->
 
 - My initial theory was that as the pop increases the gdpPercap would
-  also increases but clearly that is not the case
+  also increase and create a strong positive correlation but clearly
+  that is not the case
   - In the America’s there seem to be two countries that follow this
     trend
 - Africa’s gdpPercap are all below 15000 with many clustered around

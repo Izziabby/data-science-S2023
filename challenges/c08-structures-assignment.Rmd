@@ -26,7 +26,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category    | Needs Improvement                                                                                                | Satisfactory                                                                                                               |
-|-------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+|--------------|----------------------------|-------------------------------|
 | Effort      | Some task **q**'s left unattempted                                                                               | All task **q**'s attempted                                                                                                 |
 | Observed    | Did not document observations, or observations incorrect                                                         | Documented correct observations based on analysis                                                                          |
 | Supported   | Some observations not clearly supported by analysis                                                              | All observations clearly supported by analysis (table, graph, etc.)                                                        |
@@ -305,15 +305,15 @@ Using `plnorm()` gets rid of Monte Carlo error, but we still have uncertainty du
 ## NOTE: No need to edit; run and inspect
 # tidycustom <- function(est) {tibble(term = "pof", estimate = est)}
 # 
-# df_samples %>%
-#   bootstraps(times = 1000) %>%
-#   mutate(
-#     estimates = map(
-#       splits,
-#       ~ analysis(.x) %>% estimate_pof() %>% tidycustom()
-#     )
-#   ) %>%
-#   int_pctl(estimates)
+df_samples %>%
+  bootstraps(times = 1000) %>%
+  mutate(
+    estimates = map(
+      splits,
+      ~ analysis(.x) %>% estimate_pof() %>% tidycustom()
+    )
+  ) %>%
+  int_pctl(estimates)
 ```
 
 **Observations**:

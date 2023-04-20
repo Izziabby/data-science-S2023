@@ -24,7 +24,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category    | Needs Improvement                                                                                                | Satisfactory                                                                                                               |
-|-------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+|--------------|----------------------------|-------------------------------|
 | Effort      | Some task **q**'s left unattempted                                                                               | All task **q**'s attempted                                                                                                 |
 | Observed    | Did not document observations, or observations incorrect                                                         | Documented correct observations based on analysis                                                                          |
 | Supported   | Some observations not clearly supported by analysis                                                              | All observations clearly supported by analysis (table, graph, etc.)                                                        |
@@ -102,21 +102,22 @@ You may encounter difficulties in visualizing these data; if so document your ch
 
 gapminder %>%
   filter(year == year_min) %>% 
-    ggplot() +
-    stat_boxplot(aes(continent, gdpPercap)) +
-    scale_y_log10() +
-    coord_flip()
+  ggplot() +
+  stat_boxplot(aes(continent, gdpPercap)) +
+  scale_y_log10() +
+  coord_flip()
 
+gapminder %>% filter(year == year_min) %>% arrange(desc(gdpPercap))
 ```
 
 **Observations**:
 
 -   Each of Africa's gdpPercap were less than 5000
 -   Oceania's gdpPercap were both around 10000
--   Asia's gdpPercap were all less than 10000
+-   All but one of Asia's gdpPercap were less than 10000
 -   The Americas' gdpPercap has a cluster around 2500
--   Europe has the second highest gdpPercap at almost 150000
--   Asia had one gdpPercap that was over 90000
+-   Europe has the second highest gdpPercap at almost 15000
+-   Asia had one gdpPercap that was over 100000
 
 **Difficulties & Approaches**:
 
@@ -140,10 +141,10 @@ gapminder %>%
 **Observations**:
 
 -   Identify the outlier countries from q2
-    -   Asia: gdpPercap 331.0000 and 108382.3529
-    -   Europe: gdpPercap 973.5332 and 14734.2327
-    -   Africa: gdpPercap 298.8462 and 4725.2955
-    -   Americas: gdpPercap 1397.7171 and 13990.4821
+    -   There are 3 outlier countries:
+        -   Kuwait with a gdpPercap of 108382.3529
+        -   United States with a gdpPercap 13990.4821
+        -   Canada with a gdpPercap 11367.1611
 
 *Hint*: For the next task, it's helpful to know a ggplot trick we'll learn in an upcoming exercise: You can use the `data` argument inside any `geom_*` to modify the data that will be plotted *by that geom only*. For instance, you can use this trick to filter a set of points to label:
 
@@ -199,7 +200,7 @@ gapminder %>%
 **Observations**:
 
 -   Kuwait is an outlier in both 1952 and 2007
--   All of the countries gdpPercap median increased from 1952 to 2007
+-   All of the continents gdpPercap median increased from 1952 to 2007
 -   Asia's, Africa's, America's and Europe's upper quartile increased significantly from 1952 to 2007
     -   Europe's upper quartile had the largest increased
     -   Additionally, Europe's lower quartile increased the most from 1952 to 2007
@@ -230,14 +231,13 @@ gapminder %>%
 ```
 
 -   lifeExp of all continents seem to have generally gone up from 1952 to 2007
--   pop of all continents seem to have generally gone up from 1952 to 2007
 -   All countries in Europe's lifeExp in 2007 is above 70 years
 -   Asia in 2007 has one major outlier where the lifeExp is around 45 years
     -   the rest of Asia's life expectancies span from approx. 60-85 years
 -   The America's lifeExp had quite a wide range in 1952, which decreased by 2007
     -   Africa had the opposite trend where there was a small span in 1952 and the span increased by 2007
--   Asia was the continent with the lowest lifeExp in 1952
-    -   Africa was the continent with the lowest lifeExp in 2007
+-   Asia was the continent with the lowest lifeExp in 1952 compared to the lifeExp of all of the other continents
+-   Africa was the continent with the lowest lifeExp in 2007 compared to the lifeExp of all of the other continents
 
 ```{r q5-task2}
 ## TASK: Your second graph
@@ -255,7 +255,7 @@ gapminder %>%
   facet_grid(vars(year), vars(continent))
 ```
 
--   My initial theory was that as the pop increases the gdpPercap would also increases but clearly that is not the case
+-   My initial theory was that as the pop increases the gdpPercap would also increase and create a strong positive correlation but clearly that is not the case
     -   In the America's there seem to be two countries that follow this trend
 -   Africa's gdpPercap are all below 15000 with many clustered around 1000/2000
 -   Asia and Europe have a large range of gdpPercap
